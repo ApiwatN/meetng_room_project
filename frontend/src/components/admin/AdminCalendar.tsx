@@ -22,6 +22,29 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
+// Custom Time Slot Wrapper for Hover Effect
+const CustomTimeSlotWrapper = (props: any) => {
+    const { children, value } = props;
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+        <div
+            className="relative flex-1"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {children}
+            {isHovered && (
+                <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-start pl-1">
+                    <span className="text-[10px] font-bold text-indigo-600 bg-white/90 px-1 rounded shadow-sm backdrop-blur-sm border border-indigo-100">
+                        Start: {format(value, 'HH:mm')}
+                    </span>
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function AdminCalendar() {
     const router = useRouter();
     const { isGuest, user: currentUser } = useAuth();
@@ -426,7 +449,8 @@ export default function AdminCalendar() {
                     header: CustomWeekHeader,
                     week: {
                         header: CustomWeekHeader
-                    }
+                    },
+                    timeSlotWrapper: CustomTimeSlotWrapper
                 }}
                 dayLayoutAlgorithm="no-overlap"
                 step={30}
