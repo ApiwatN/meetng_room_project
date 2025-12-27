@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  /* Slate 50 */
+  --foreground: #0f172a;
+  /* Slate 900 */
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Scrollbar for clean look */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Hide All-Day event row in React Big Calendar */
+.rbc-allday-cell {
+  display: none !important;
+}
+
+/* Remove default border from calendar events to prevent dark stripes */
+.rbc-event {
+  border: none !important;
+}
+
+.rbc-event.rbc-selected {
+  border: none !important;
+  outline: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile-friendly Calendar Toolbar - Single Row */
+@media (max-width: 768px) {
+  .rbc-toolbar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 4px;
+  }
+
+  .rbc-toolbar .rbc-toolbar-label {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+
+  .rbc-toolbar button {
+    font-size: 9px;
+    padding: 3px 6px;
+    margin: 0 !important;
+  }
+
+  .rbc-btn-group {
+    display: flex;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+
+  /* Compact header cells */
+  .rbc-header {
+    padding: 4px 2px !important;
+    font-size: 10px !important;
+  }
+
+  /* Smaller time slots */
+  .rbc-time-slot {
+    min-height: 20px;
+  }
+
+  .rbc-label {
+    font-size: 9px;
+    padding: 0 4px;
+  }
+}
+
+/* Current Time Indicator for React Big Calendar */
+.rbc-current-time-indicator {
+  background-color: #dc2626 !important;
+  /* red-600 */
+  height: 2px !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 4px rgba(220, 38, 38, 0.5);
+}
+
+/* Add a dot at the start of the time indicator */
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: #dc2626;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(220, 38, 38, 0.6);
+  border: 1px solid white;
+}
+
+/* Hover effect for calendar time slots */
+.rbc-time-slot:hover {
+  background-color: rgba(79, 70, 229, 0.1) !important;
+  /* Indigo-500 with 10% opacity */
+  cursor: pointer;
+}

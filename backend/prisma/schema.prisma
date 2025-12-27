@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int       @id @default(autoincrement())
+  username            String    @unique
+  employeeId          String    @unique
+  email               String    @unique
+  name                String?
+  password            String
+  role                String    @default("USER") // 'ADMIN' or 'USER'
+  section             String?
+  phoneNumber         String?
+  forceChangePassword Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  bookings            Booking[]
+}
+
+model Room {
+  id         Int       @id @default(autoincrement())
+  name       String
+  capacity   Int
+  facilities String?
+  status     String    @default("AVAILABLE") // 'AVAILABLE', 'MAINTENANCE', 'OCCUPIED'
+  imageUrl   String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  bookings   Booking[]
+}
+
+model Booking {
+  id               Int       @id @default(autoincrement())
+  userId           Int
+  roomId           Int
+  startTime        DateTime
+  endTime          DateTime
+  topic            String
+  isPrivate        Boolean   @default(false)
+  pinCode          String
+  status           String    @default("CONFIRMED") // CONFIRMED, CANCELLED
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  recurringType    String?
+  recurringEndDate DateTime?
+  groupId          String?
+
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@index([startTime, endTime])
+  @@index([roomId, startTime])
+  @@index([userId, startTime])
+  @@index([status])
+}
