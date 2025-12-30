@@ -11,22 +11,48 @@ The primary objective of this project is to provide an efficient and user-friend
 
 ## 2. Flow Diagram
 
-```mermaid
-graph TD
-    A[User] -->|Login| B(Login Page)
-    B -->|Success| C{Role}
-    C -->|Admin| D[Admin Dashboard]
-    C -->|User| E[User Dashboard]
-  
-    E -->|View Calendar| F[Calendar View]
-    F -->|Select Slot| G[Booking Form]
-    G -->|Submit| H{Validation}
-    H -->|Valid| I[Booking Confirmed]
-    H -->|Invalid| G
-  
-    D -->|Manage Rooms| J[Room Management]
-    D -->|Manage Users| K[User Management]
-    D -->|View All Bookings| F
+```
+                                    ┌─────────────────┐
+                                    │      User       │
+                                    └────────┬────────┘
+                                             │ Login
+                                             ▼
+                                    ┌─────────────────┐
+                                    │   Login Page    │
+                                    └────────┬────────┘
+                                             │ Success
+                                             ▼
+                                    ┌─────────────────┐
+                                    │      Role?      │
+                                    └────────┬────────┘
+                           ┌─────────────────┴─────────────────┐
+                           │ Admin                             │ User
+                           ▼                                   ▼
+                ┌─────────────────────┐             ┌─────────────────────┐
+                │   Admin Dashboard   │             │   User Dashboard    │
+                └─────────┬───────────┘             └──────────┬──────────┘
+         ┌────────────────┼────────────────┐                   │
+         │                │                │                   │ View Calendar
+         ▼                ▼                ▼                   ▼
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐     ┌─────────────────┐
+│Manage Rooms │  │Manage Users │  │View Bookings│     │  Calendar View  │
+└─────────────┘  └─────────────┘  └─────────────┘     └────────┬────────┘
+                                                               │ Select Slot
+                                                               ▼
+                                                      ┌─────────────────┐
+                                                      │  Booking Form   │
+                                                      └────────┬────────┘
+                                                               │ Submit
+                                                               ▼
+                                                      ┌─────────────────┐
+                                                      │   Validation    │
+                                                      └────────┬────────┘
+                                               ┌───────────────┴───────────────┐
+                                               │ Valid                         │ Invalid
+                                               ▼                               ▼
+                                    ┌─────────────────┐             ┌─────────────────┐
+                                    │Booking Confirmed│             │  Return to Form │
+                                    └─────────────────┘             └─────────────────┘
 ```
 
 ## 3. Features

@@ -410,19 +410,66 @@ export default function Timeline({ rooms, onRefresh, isGuest = false }: Timeline
             // Calculate snapped percentage
             const snappedPercentage = (snappedMinutes / totalMinutesInRange) * 100;
 
-            // Calculate width for 1 hour (default booking duration)
-            const oneHourPercentage = (60 / totalMinutesInRange) * 100;
+            // Calculate hovered start time
+            const hoveredStartMinutes = startHour * 60 + snappedMinutes;
+            const hoveredStartTime = new Date(selectedDate);
+            hoveredStartTime.setHours(Math.floor(hoveredStartMinutes / 60), hoveredStartMinutes % 60, 0, 0);
+
+            // Find room's bookings for this date
+            const roomBookings = allBookings.filter(b => {
+                if (b.roomId !== roomId) return false;
+                const bookingDate = new Date(b.startTime).toISOString().split('T')[0];
+                return bookingDate === selectedDate;
+            }).map(b => ({
+                ...b,
+                startObj: new Date(b.startTime),
+                endObj: new Date(b.endTime)
+            })).sort((a, b) => a.startObj.getTime() - b.startObj.getTime());
+
+            // Check if hovered time is inside an existing booking
+            const isInsideBooking = roomBookings.some(b =>
+                hoveredStartTime >= b.startObj && hoveredStartTime < b.endObj
+            );
+
+            // If inside a booking, don't show hover
+            if (isInsideBooking) {
+                setHoveredSlot(null);
+                return;
+            }
+
+            // Find next booking that starts after our hovered start time
+            const nextBooking = roomBookings.find(b => b.startObj > hoveredStartTime);
+
+            // Default duration: 1 hour (60 minutes)
+            let availableMinutes = 60;
+
+            // If there's a next booking, limit to time until that booking
+            if (nextBooking) {
+                const minutesUntilNext = (nextBooking.startObj.getTime() - hoveredStartTime.getTime()) / (1000 * 60);
+                availableMinutes = Math.min(60, minutesUntilNext);
+            }
+
+            // Don't show if no available time
+            if (availableMinutes <= 0) {
+                setHoveredSlot(null);
+                return;
+            }
+
+            // Calculate width percentage based on available minutes
+            const widthPercentage = (availableMinutes / totalMinutesInRange) * 100;
 
             // Calculate time label
-            const totalMinutes = startHour * 60 + snappedMinutes;
-            const hour = Math.floor(totalMinutes / 60);
-            const minute = totalMinutes % 60;
-            const timeLabel = `Start: ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const hour = Math.floor(hoveredStartMinutes / 60);
+            const minute = hoveredStartMinutes % 60;
+            const endMinutes = hoveredStartMinutes + availableMinutes;
+            const endHourLabel = Math.floor(endMinutes / 60);
+            const endMinuteLabel = endMinutes % 60;
+            const timeLabel = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} - ${endHourLabel.toString().padStart(2, '0')}:${endMinuteLabel.toString().padStart(2, '0')}`;
 
             setHoveredSlot({
                 roomId,
                 left: snappedPercentage,
-                width: oneHourPercentage,
+                width: widthPercentage,
                 timeLabel
             });
         });
