@@ -468,6 +468,7 @@ export default function AdminCalendar() {
                 }}
                 dayLayoutAlgorithm="no-overlap"
                 step={60}
+                timeslots={1}
                 eventPropGetter={(event) => {
                     const roomId = event.resource.roomId || 0;
                     const colorIndex = roomId % ROOM_COLORS.length;
