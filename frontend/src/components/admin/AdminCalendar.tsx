@@ -300,6 +300,16 @@ export default function AdminCalendar() {
         </div>
     );
 
+    // Custom Header for Month View - Only show day name, no date/month/year
+    const CustomMonthHeader = ({ date, label }: any) => (
+        <div className="flex items-center justify-center py-1 md:py-2">
+            <div className="font-bold text-slate-700 uppercase tracking-wide text-[10px] md:text-sm">
+                <span className="md:hidden">{format(date, 'EEE', { locale: enUS })}</span>
+                <span className="hidden md:inline">{format(date, 'EEEE', { locale: enUS })}</span>
+            </div>
+        </div>
+    );
+
     // Room Colors Palette (Indices correspond to roomId % length)
     const ROOM_COLORS = [
         '#4f46e5', // Indigo (Default)
@@ -443,17 +453,21 @@ export default function AdminCalendar() {
                 selectable={true}
                 onSelectSlot={handleSelectSlot}
                 formats={{
-                    dayFormat: (date: Date, culture: any, localizer: any) => localizer!.format(date, 'EEEE dd/MM/yyyy', culture)
+                    dayFormat: (date: Date, culture: any, localizer: any) => localizer!.format(date, 'EEEE dd/MM/yyyy', culture),
+                    weekdayFormat: (date: Date, culture: any, localizer: any) => localizer!.format(date, 'EEEE', culture)
                 }}
                 components={{
                     header: CustomWeekHeader,
                     week: {
                         header: CustomWeekHeader
                     },
+                    month: {
+                        header: CustomMonthHeader
+                    },
                     timeSlotWrapper: CustomTimeSlotWrapper
                 }}
                 dayLayoutAlgorithm="no-overlap"
-                step={30}
+                step={60}
                 eventPropGetter={(event) => {
                     const roomId = event.resource.roomId || 0;
                     const colorIndex = roomId % ROOM_COLORS.length;
