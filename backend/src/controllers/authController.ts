@@ -32,8 +32,8 @@ export const login = async (req: Request, res: Response) => {
 
         const token = jwt.sign(
             { userId: user.id, role: user.role, forceChangePassword: user.forceChangePassword },
-            JWT_SECRET,
-            { expiresIn: '8h' }
+            JWT_SECRET
+            // No expiresIn - token never expires until user signs out
         );
 
         res.json({

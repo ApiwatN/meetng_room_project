@@ -1,6 +1,6 @@
 'use client';
 
 export default function SessionGuard({ children }: { children: React.ReactNode }) {
-    // Idle timer disabled - using JWT expiration (7 days) only
+    // Session persists until user explicitly signs out (no token expiration)
     return <>{children}</>;
 }

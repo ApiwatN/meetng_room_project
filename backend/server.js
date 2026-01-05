@@ -111,8 +111,8 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { userId: user.id, role: user.role, forceChangePassword: user.forceChangePassword },
-            JWT_SECRET,
-            { expiresIn: '7d' }
+            JWT_SECRET
+            // No expiresIn - token never expires until user signs out
         );
 
         res.json({ token, user: { id: user.id, username: user.username, role: user.role, forceChangePassword: user.forceChangePassword, employeeId: user.employeeId, email: user.email, section: user.section, phoneNumber: user.phoneNumber } });
