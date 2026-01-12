@@ -365,6 +365,20 @@ export default function BookingModal({ roomId, roomName, onClose, onSuccess, ini
             const data = await res.json();
 
             if (!res.ok) {
+                // Check for session expiration
+                if (res.status === 401 || res.status === 403) {
+                    await Swal.fire({
+                        title: 'Session Expired',
+                        text: 'Your session has expired. Please sign in again.',
+                        icon: 'warning',
+                        confirmButtonText: 'Sign In',
+                        confirmButtonColor: '#4F46E5',
+                        allowOutsideClick: false
+                    });
+                    // Redirect to login
+                    window.location.href = '/login';
+                    return;
+                }
                 throw new Error(data.error || 'Booking failed');
             }
 

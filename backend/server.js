@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -82,7 +83,10 @@ const authenticateToken = (req, res, next) => {
     if (!token) return res.status(401).json({ error: 'Access token required' });
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ error: 'Invalid or expired token' });
+        if (err) {
+            console.error('Token verification failed:', err.message);
+            return res.status(403).json({ error: 'Invalid or expired token' });
+        }
         req.user = user;
         next();
     });
@@ -111,8 +115,8 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { userId: user.id, role: user.role, forceChangePassword: user.forceChangePassword },
-            JWT_SECRET
-            // No expiresIn - token never expires until user signs out
+            JWT_SECRET,
+            { expiresIn: '100y' } // Token effectively never expires
         );
 
         res.json({ token, user: { id: user.id, username: user.username, role: user.role, forceChangePassword: user.forceChangePassword, employeeId: user.employeeId, email: user.email, section: user.section, phoneNumber: user.phoneNumber } });
